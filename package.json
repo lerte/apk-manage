@@ -1,0 +1,36 @@
+{
+  "name": "apk-manage",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Lerte Smith<lerte@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon --watch 'core/**/*.ts' --exec 'ts-node' core/index.ts",
+    "start": "node core/index.js"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.6.1"
+  },
+  "dependencies": {
+    "@types/koa": "^2.0.41",
+    "@types/koa-bodyparser": "^3.0.26",
+    "@types/koa-router": "^7.0.26",
+    "@types/koa2-cors": "^2.0.1",
+    "@types/node": "^8.0.57",
+    "adbkit-apkreader": "^3.0.0",
+    "apkinfo": "^1.0.8",
+    "body-parser": "^1.18.2",
+    "dotenv": "^4.0.0",
+    "koa": "^2.4.1",
+    "koa-basic-auth": "^2.0.0",
+    "koa-body": "^2.5.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.3.0",
+    "koa-send": "^4.1.1",
+    "koa2-cors": "^2.0.5",
+    "reflect-metadata": "^0.1.10",
+    "spdy": "^3.4.7"
+  }
+}
