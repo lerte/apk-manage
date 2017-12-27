@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon --watch 'core/**/*.ts' --exec 'ts-node' core/index.ts",
+    "build": "tsc",
     "start": "node core/index.js"
   },
   "devDependencies": {
@@ -19,7 +20,7 @@
     "@types/koa-router": "^7.0.26",
     "@types/koa2-cors": "^2.0.1",
     "@types/node": "^8.0.57",
-    "adbkit-apkreader": "^3.0.0",
+    "adm-zip": "^0.4.7",
     "apkinfo": "^1.0.8",
     "body-parser": "^1.18.2",
     "dotenv": "^4.0.0",

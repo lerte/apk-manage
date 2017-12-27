@@ -9,7 +9,7 @@ const Main = {
           <div class="columns is-vcentered">
             <div class="column">
               <figure class="image is-128x128">
-                <img src="/www/images/ic_launcher.png" />
+                <img :src="manifest.icon || '/www/images/ic_launcher.png'" />
               </figure>
             </div>
             <div class="column">
@@ -17,7 +17,7 @@ const Main = {
                 <thead>
                   <tr>
                     <th>名称</th>
-                    <th v-text="file.name"></th>
+                    <th v-text="manifest.label"></th>
                   </tr>
                 </thead>
                 <tbody>
