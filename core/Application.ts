@@ -63,41 +63,38 @@ export default class Application {
         this.router.post('/upload', async (ctx: Context) => {
             const file = ctx.request.body.files.file
             const reader = await fs.createReadStream(file.path)
-            let manifest
-            await aapt(file.path , (err, data) => {
-                if (err) {
-                  console.log(err)
-                } else {
-                  const packageInfo = data.match(/name='([^']+)'[\s]*versionCode='(\d+)'[\s]*versionName='([^']+)/)
-                  const applicationInfo = data.match(/label='([^']+)'[\s]*icon='([^']+)/)
-                  manifest = {
-                    package : packageInfo[1],
-                    versionCode : packageInfo[2],
-                    versionName : packageInfo[3],
-                    label: applicationInfo[1],
-                    icon: applicationInfo[2]
-                  }
+            ctx.body = await aapt(file.path).then( data => {
+                const packageInfo = data.match(/name='([^']+)'[\s]*versionCode='(\d+)'[\s]*versionName='([^']+)/)
+                const applicationInfo = data.match(/label='([^']+)'[\s]*icon='([^']+)/)
+                return {
+                  package : packageInfo[1],
+                  versionCode : packageInfo[2],
+                  versionName : packageInfo[3],
+                  label: applicationInfo[1],
+                  icon: applicationInfo[2]
                 }
-            });
-            const stream = await fs.createWriteStream(path.join(__dirname+'./../content/upload', manifest.package+'.apk'))
-	        await reader.pipe(stream)
-	        // backup this version
-            const backup = await fs.createWriteStream(path.join(__dirname+'./../content/upload', manifest.package+'-v'+manifest.versionName+'.apk'))
-            await reader.pipe(backup)
-            await reader.close()
+            })
+
             // get icon from apk
             const zip = await new AdmZip(file.path)
             const zipEntries = zip.getEntries()
             zipEntries.forEach(zipEntry => {
-                if(zipEntry.entryName == manifest.icon){
-                    zip.extractEntryTo(manifest.icon, path.join(__dirname+'./../content/upload/'), /*maintainEntryPath*/false, /*overwrite*/true)
+                if(zipEntry.entryName == ctx.body.icon){
+                    zip.extractEntryTo(ctx.body.icon, path.join(__dirname+'./../content/upload/'), /*maintainEntryPath*/false, /*overwrite*/true)
                 }
             })
-            manifest['icon'] = '/upload/' + manifest.icon.split('/').pop()
-            manifest['success'] = true
-            manifest['filename'] = file.name
-            manifest['downloadUrl'] = '/upload/'+manifest.package+'.apk'
-            ctx.body = Object.assign({}, manifest)
+            
+            // save apk
+            const stream = await fs.createWriteStream(path.join(__dirname+'./../content/upload', ctx.body.package+'.apk'))
+	        await reader.pipe(stream)
+	        // backup this version
+            const backup = await fs.createWriteStream(path.join(__dirname+'./../content/upload', ctx.body.package+'-v'+ctx.body.versionName+'.apk'))
+            await reader.pipe(backup)
+
+            ctx.body['icon'] = '/upload/' + ctx.body.icon.split('/').pop()
+            ctx.body['filename'] = file.name
+            ctx.body['downloadUrl'] = '/upload/'+ctx.body.package+'.apk'
+            ctx.body['success'] = true
         })
 
         this.koa.use(koaBody({ multipart: true }))
