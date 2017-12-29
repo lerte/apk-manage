@@ -5,6 +5,7 @@ const Main = {
                 :useIcon="true"
                 ref="simplert">
       </simplert>
+      <progress class="progress is-primary" :value="progress" max="1000"></progress>
       <div class="container">
           <div class="columns is-vcentered">
             <div class="column">
@@ -87,7 +88,8 @@ const Main = {
         style: {
           border: '2px dashed #CCC'
         },
-        isActive: false
+        isActive: false,
+        progress: 0
       }
     },
     computed: {
@@ -136,8 +138,14 @@ const Main = {
         }
       },
       uploadFile(formData){
-        this.isActive = true
-        axios.post('/upload',formData)
+        //this.isActive = true
+        let config = {
+          onUploadProgress: progressEvent => {
+            let complete = (progressEvent.loaded / progressEvent.total * 1000 | 0)
+            this.progress = complete
+          }
+        }
+        axios.post('/upload',formData, config)
         .then((response)=>{
           if(response.data.success){
             let obj = {
