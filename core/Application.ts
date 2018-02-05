@@ -64,12 +64,12 @@ export default class Application {
             const file = ctx.request.body.files.file
             const reader = await fs.createReadStream(file.path)
             ctx.body = await aapt(file.path).then( data => {
-                const packageInfo = data.match(/name='([^']+)'[\s]*versionCode='(\d+)'[\s]*versionName='([^']+)/)
+                const packageInfo = data.match(/name='([^']+)'[\s]*versionCode='(\d+)'[\s]*versionName='([^']?)'/)
                 const applicationInfo = data.match(/label='([^']+)'[\s]*icon='([^']+)/)
                 return {
                   package : packageInfo[1],
                   versionCode : packageInfo[2],
-                  versionName : packageInfo[3],
+                  versionName : packageInfo[3]?packageInfo[3]:packageInfo[2],
                   label: applicationInfo[1],
                   icon: applicationInfo[2]
                 }
