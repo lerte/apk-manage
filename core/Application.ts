@@ -63,8 +63,8 @@ export default class Application {
         this.router.post('/upload', async (ctx: Context) => {
             const file = ctx.request.body.files.file
             const reader = await fs.createReadStream(file.path)
-            ctx.body = await aapt(file.path).then( data => {
-                const packageInfo = data.match(/name='([^']+)'[\s]*versionCode='(\d+)'[\s]*versionName='([^']?)'/)
+	    ctx.body = await aapt(file.path).then( data => {
+                const packageInfo = data.match(/name='([^']+)'[\s]*versionCode='(\d+)'[\s]*versionName='([^']*)'/)
                 const applicationInfo = data.match(/label='([^']+)'[\s]*icon='([^']+)/)
                 return {
                   package : packageInfo[1],
